@@ -108,3 +108,47 @@ INSERT INTO `p` VALUES ('P6', '齿轮', '红', '30');
 
 ```
 
+（1）`J1`的JNO
+
+```mysql
+
+```
+
+(2)
+
+(3)
+
+(4)
+
+不是天津供应商红色的JNO
+
+```mysql
+SELECT JNO FROM J
+	WHERE NOT EXISTS (
+			SELECT *
+			FROM SPJ,P,S
+			WHERE SPJ.PNO=P.PNO AND P.COLOR='红' AND S.CITY='天津' AND S.SNO=spj.SNO
+				AND spj.JNO=J.JNO
+);
+```
+
+
+
+不是天津供应商的红色JNO
+
+```mysql
+SELECT JNO FROM J 
+	WHERE JNO IN (
+			SELECT JNO
+			FROM SPJ,P
+			WHERE SPJ.PNO=P.PNO AND P.COLOR='红' and SNO IN (
+				SELECT SNO from S
+					WHERE S.CITY!='天津'
+			)
+);
+```
+
+
+
+(5)
+
