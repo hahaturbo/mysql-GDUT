@@ -1,4 +1,11 @@
-# work3 P130 T 4
+# work3 P130 T 4、5、7
+
+* [Contents](#work3 P130 T 4、5、7)
+  * [T4](#T4)
+  * [T5](#T5)
+  * [T7](#T7)
+
+## T4
 
 创建 __`J`__ 表
 
@@ -108,19 +115,35 @@ INSERT INTO `p` VALUES ('P6', '齿轮', '红', '30');
 
 ```
 
-（1）`J1`的JNO
+建表后的数据库存储在[study.sql](./study.sql)中
+
+（1）`J1`的`JNO`
 
 ```mysql
-
+SELECT SNO FROM SPJ WHERE JNO='J1';
 ```
 
 (2)
 
+`J1`中的`P1`的`SNO`
+
+```mysql
+SELECT SNO FROM SPJ WHERE JNO='J1' AND PNO='P1';
+```
+
 (3)
+
+`J1`为红色的`SNO`
+
+```mysql
+SELECT SNO FROM SPJ WHERE JNO='J1' AND PNO IN (
+	SELECT PNO FROM P WHERE COLOR='红'
+);
+```
 
 (4)
 
-不是天津供应商红色的JNO
+不是天津供应商红色的`JNO`
 
 ```mysql
 SELECT JNO FROM J
@@ -134,7 +157,7 @@ SELECT JNO FROM J
 
 
 
-不是天津供应商的红色JNO
+不是天津供应商的红色`JNO`
 
 ```mysql
 SELECT JNO FROM J 
@@ -152,3 +175,79 @@ SELECT JNO FROM J
 
 (5)
 
+至少用了`S1`**全部零件**的`JNO`
+
+```mysql
+SELECT DISTINCT JNO FROM SPJ SPJ3 WHERE NOT EXISTS(
+		SELECT *
+		FROM SPJ SPJ1 WHERE SNO='S1' AND NOT EXISTS(
+				SELECT *FROM SPJ SPJ2 WHERE SPJ2.PNO=SPJ1.PNO
+				AND SPJ2.JNO=SPJ3.JNO
+		)
+);
+```
+
+## T5
+
+
+
+```mysql
+-- (1)找出所有供应商的姓名和城市
+SELECT SNAME,CITY FROM S;
+-- (2)所有零件的名称、颜色、重量
+SELECT  PNAME,COLOR,WEIGHT FROM P;
+-- (3)S1供应零件的工程
+SELECT JNO FROM spj WHERE SNO='S1';
+-- (4)使用J2使用的零件名称和数量
+SELECT P.PNAME,spj.QTY FROM P,SPJ WHERE P.PNO=spj.PNO AND spj.JNO='J2';
+-- (5)上海厂的所有零件号码
+SELECT DISTINCT PNO FROM spj WHERE SNO IN(
+		SELECT SNO FROM S WHERE CITY='上海'
+);
+-- (6)上海零件的工程
+SELECT JNAME FROM J,SPJ,S WHERE J.JNO=spj.JNO and spj.SNO=S.SNO and S.CITY='上海';
+-- (7)没有使用天津产零件的工程
+SELECT JNO FROM J WHERE NOT EXISTS (
+		SELECT * FROM SPJ,S WHERE spj.JNO=J.JNO AND spj.SNO=S.SNO AND S.CITY='天津'
+);
+-- (8)改红色零件为蓝色
+-- SELECT * FROM P
+UPDATE P SET COLOR='蓝' WHERE COLOR='红'
+-- SELECT * FROM P;
+
+-- (9)S5给J4的零件P6改为为P3给
+-- SELECT * FROM SPJ
+UPDATE spj SET SNO='S3' WHERE SNO='S5' AND JNO='J4' AND PNO='P6'
+-- SELECT * FROM SPJ;
+-- (10)删除供应商关系中S2的记录，然后从供应情况删除S2相关
+DELETE FROM SPJ WHERE SNO='S2';
+DELETE FROM S WHERE SNO='S2';
+-- (11)插入一组元组
+-- SELECT * FROM SPJ
+INSERT INTO SPJ VALUES ('S2', 'P4', 'J6', '200')
+-- SELECT * FROM SPJ;
+
+ 
+```
+
+修改后的数据库结构存储在[study(modify).sql](./study(modify).sql)中
+
+以上题目中所以查询的相关代码都在[inquire](./inquire/)文件夹内
+
+## T7
+
+### 视图的优点
+
+1. 视图简化的用户的操作
+
+2. 视图使用户能以多角度去看待同一数据
+
+3. 视图对重构数据库提供一定的逻辑独立性
+
+4. 视图能对机密数据提供安全保护
+
+5. 视图可以更清晰表达查询
+
+   ------
+
+   作业到此结束，希望老师审阅
