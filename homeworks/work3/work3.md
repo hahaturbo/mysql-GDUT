@@ -1,10 +1,8 @@
-# work3 P130 T 4、5、7
-
-* [Contents](#work3 P130 T 4、5、7)
+* [work3 P130 T 4、5、7](#work3 P130 T 4、5、7)
   * [T4](#T4)
   * [T5](#T5)
   * [T7](#T7)
-
+# work3 P130 T 4、5、7
 ## T4
 
 创建 __`J`__ 表
@@ -232,7 +230,7 @@ INSERT INTO SPJ VALUES ('S2', 'P4', 'J6', '200')
 
 修改后的数据库结构存储在[study(modify).sql](./study(modify).sql)中
 
-以上题目中所以查询的相关代码都在[inquire](./inquire/)文件夹内
+以上题目中所有查询的相关代码和查询结果图都在[inquire](./inquire/)文件夹内
 
 ## T7
 
